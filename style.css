@@ -49,8 +49,8 @@ body.mode-2d { background: var(--background); }
 }
 #gateway.fade { opacity: 0; pointer-events: none; }
 #cat-img {
-  width: min(42vw, 190px); height: auto; border: 2px solid var(--border);
-  box-shadow: var(--shadow-hard); border-radius: var(--radius);
+  width: min(52vw, 240px); height: auto; border: none;
+  box-shadow: none; border-radius: var(--radius);
 }
 #cat-fallback { display: none; font-size: 120px; line-height: 1; filter: grayscale(1); }
 #gateway h1 {
