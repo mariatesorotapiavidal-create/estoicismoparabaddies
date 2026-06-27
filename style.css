@@ -44,8 +44,8 @@ body.mode-2d { background: var(--background); }
 /* ---------- GATEWAY (Gato sin sonido + Instrucciones) ---------- */
 #gateway {
   position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 20px; text-align: center; padding: 26px;
-  background: var(--background); transition: opacity .6s ease;
+  align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 26px;
+  background: var(--background); transition: opacity .6s ease; overflow-y: auto;
 }
 #gateway.fade { opacity: 0; pointer-events: none; }
 #cat-img {
@@ -75,7 +75,7 @@ body.mode-2d { background: var(--background); }
 #btn-enter:active { transform: translate(3px, 3px); box-shadow: none; }
 
 .firma {
-  margin-top: 32px;
+  margin-top: 10px;
   font-size: 11px;
   color: var(--muted-foreground);
   font-family: var(--font-mono);
@@ -84,10 +84,10 @@ body.mode-2d { background: var(--background); }
 }
 
 .creditos {
-  margin: 8px auto 0;
-  max-width: 42ch;
-  font-size: 9px;
-  line-height: 1.5;
+  margin: 4px auto 0;
+  max-width: min(94vw, 820px);
+  font-size: 10px;
+  line-height: 1.45;
   color: var(--muted-foreground);
   font-family: var(--font-mono);
   letter-spacing: 0.02em;
