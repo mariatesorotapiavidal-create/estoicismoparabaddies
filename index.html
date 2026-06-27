@@ -11,21 +11,39 @@
 </head>
 <body>
 
-  <!-- ===================== MUNDO 3D (void negro) ===================== -->
-  <a-scene renderer="antialias:true;colorManagement:true" vr-mode-ui="enabled:false"
-           background="color:#000000" fog="type:linear;color:#000000;near:3;far:26"
+  <!-- Canvas 2D para el efecto Matrix -->
+  <canvas id="matrix-bg"></canvas>
+
+  <!-- ===================== MUNDO 3D (Transparente) ===================== -->
+  <!-- Se agregó alpha:true y se eliminó a-sky para ver el canvas de atrás -->
+  <a-scene renderer="antialias:true; alpha:true; colorManagement:true" vr-mode-ui="enabled:false"
+           fog="type:linear;color:#000000;near:3;far:26"
            loading-screen="enabled:false">
 
-    <a-sky color="#000000"></a-sky>
     <a-entity light="type:ambient;intensity:0.85;color:#ffffff"></a-entity>
     <a-entity light="type:directional;intensity:0.4;color:#ffffff" position="0 4 2"></a-entity>
 
     <!-- Suelo: relleno negro + grid gris (holográfico) -->
     <a-plane rotation="-90 0 0" width="220" height="220" position="0 -0.02 0"
-             material="shader:flat;color:#050505"></a-plane>
+             material="shader:flat;color:#050505;transparent:true;opacity:0.8"></a-plane>
     <a-entity geometry="primitive:plane;width:90;height:90;segmentsWidth:45;segmentsHeight:45"
               rotation="-90 0 0"
               material="shader:flat;wireframe:true;color:#262626;transparent:true;opacity:0.6"></a-entity>
+
+    <!-- ===== GATO GUERRERO (NPC) ===== -->
+    <a-entity position="6 1.1 -8" rotation="0 -35 0" class="clickable" hologram="poem:mapa; threshold:4.0"
+              animation__float="property:position; dir:alternate; loop:true; dur:3000; to:6 1.25 -8">
+      
+      <!-- Imagen del gato -->
+      <a-image src="assets/gato-guerrero.webp" width="2.2" height="2.2" material="alphaTest:0.5; transparent:true"></a-image>
+      
+      <!-- Burbuja Brutalista -->
+      <a-entity position="-0.8 1.6 0.1">
+        <a-plane width="2.8" height="0.6" color="#ffffff" material="shader:flat"></a-plane>
+        <a-text value="VEN Y PELEA INVESIL" color="#000000" align="center" width="5" position="0 0 0.02" font="monoid"></a-text>
+        <a-plane width="0.2" height="0.2" color="#ffffff" position="0.8 -0.3 -0.01" rotation="0 0 45" material="shader:flat"></a-plane>
+      </a-entity>
+    </a-entity>
 
     <!-- ===== Hologramas flotantes: 1 por poema ===== -->
     <!-- I -->
@@ -99,6 +117,17 @@
   <div id="fuga-layer">
     <div id="fuga-text"></div>
     <button id="fuga-volver">← volver a la red</button>
+  </div>
+  
+  <!-- El Mapa del Tesoro -->
+  <div id="mapa-layer" class="hidden">
+    <div class="mapa-container">
+      <div id="mapa-head">
+        <span class="mapa-title">X_MARKS_THE_SPOT // manifiesto.exe</span>
+        <button id="mapa-cerrar">✕ cerrar</button>
+      </div>
+      <div id="mapa-body"></div>
+    </div>
   </div>
 
   <!-- Navegación tipo Street View -->
