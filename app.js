@@ -12,6 +12,30 @@
   var LINK_RE = /\[\[([^\]|]+)\|([^\]|]+)\|([^\]]+)\]\]/g;
 
   var state = { current: null, history: [], lastSurface: "i" };
+  var typeTimer = null;
+
+  // efecto máquina de escribir sobre un verso (la IA lo teclea en vivo)
+  function typeWriter(el){
+    if(typeTimer){ clearInterval(typeTimer); typeTimer = null; }
+    var fullHTML = el.innerHTML;                 // guardamos los enlaces para restaurarlos
+    var clone = el.cloneNode(true);              // texto limpio, sin el glifo del enlace
+    clone.querySelectorAll(".glifo").forEach(function(g){ g.remove(); });
+    var text = clone.textContent;
+    el.style.animation = "none"; el.style.opacity = "1";  // anula el cascade de streaming
+    el.classList.add("typing");
+    el.textContent = "";
+    var i = 0;
+    typeTimer = setInterval(function(){
+      i++;
+      el.textContent = text.slice(0, i);
+      el.scrollIntoView({ block: "center" });
+      if(i >= text.length){
+        clearInterval(typeTimer); typeTimer = null;
+        el.innerHTML = fullHTML;                 // vuelven los hipervínculos clicables
+        el.classList.remove("typing");
+      }
+    }, 38);
+  }
 
   function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
   function $(s){return document.querySelector(s);}
@@ -49,11 +73,39 @@
     var body = $("#panel-body");
     body.innerHTML = nodo.versos.map(lineToHTML).join("");
     body.scrollTop = 0;
+    clearReveal(body);
     $("#btn-back").style.visibility = state.history.length ? "visible" : "hidden";
     $("#panel").classList.remove("hidden");
+    if(nodo.surface) applyReveal(body, nodo.reveal);   // animación propia de cada poema
   }
   function navigate(dest){ if(state.current) state.history.push(state.current); render(dest); }
   function goBack(){ if(state.history.length) render(state.history.pop()); }
+
+  /* ---------- animaciones de apertura, una por poema ---------- */
+  function clearReveal(body){
+    body.classList.remove("rv-glitch","rv-zoom","rv-scan");
+    $("#panel").classList.remove("flash");
+  }
+  function restartAnim(el, cls){ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+  function flashPanel(){
+    var p = $("#panel"); p.classList.remove("flash"); void p.offsetWidth; p.classList.add("flash");
+    setTimeout(function(){ p.classList.remove("flash"); }, 420);
+  }
+  function streamLines(body){
+    var kids = body.children;
+    for(var i=0;i<kids.length;i++){
+      kids[i].style.opacity = "0";
+      kids[i].style.animation = "streamIn .32s ease forwards";
+      kids[i].style.animationDelay = (i*0.055).toFixed(2)+"s";
+    }
+  }
+  function applyReveal(body, kind){
+    if(!kind) return;
+    if(kind === "glitch") restartAnim(body, "rv-glitch");
+    else if(kind === "zoom"){ restartAnim(body, "rv-zoom"); flashPanel(); }
+    else if(kind === "scan") restartAnim(body, "rv-scan");
+    else if(kind === "type") streamLines(body);
+  }
 
   function enterFuga(){
     $("#panel").classList.add("hidden");
@@ -67,9 +119,10 @@
     $("#panel").classList.add("hidden"); // Ocultar el cristal si estuviera abierto
     $("#mapa-layer").classList.remove("hidden");
     
+    var pilar = 0;
     $("#mapa-body").innerHTML = window.POEMAS.mapa.versos.map(function(l){
       if(l === "") return "<br/>";
-      if(l.startsWith("[")) return "<div class='escena'>" + esc(l) + "</div>";
+      if(l.startsWith("[")){ pilar++; return "<div class='escena c" + pilar + "'>" + esc(l) + "</div>"; }
       return "<div class='verso'>" + esc(l) + "</div>";
     }).join("");
     
@@ -97,7 +150,30 @@
     proximityClose: function(id){
       if(this._active === id && !state.history.length) closePanel();
     },
-    openIndex: function(){ closePanel(); $("#index2d").classList.remove("hidden"); }
+    openIndex: function(){ closePanel(); $("#index2d").classList.remove("hidden"); },
+    _tauntT: null,
+    // texto burlón cuando un ícono esquiva el clic
+    taunt: function(){
+      var msgs = ["casi…", "fallaste", "jaja no", "ni cerca", "otra vez será", "uy, casi", "demasiado lento"];
+      var t = document.getElementById("taunt");
+      if(!t) return;
+      t.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+      t.classList.remove("show"); void t.offsetWidth; t.classList.add("show");
+      clearTimeout(this._tauntT);
+      this._tauntT = setTimeout(function(){ t.classList.remove("show"); }, 950);
+    },
+    // clic en un ícono de IA: abre el poema III y aterriza en un verso aleatorio
+    openIIIRandom: function(){
+      this.open("iii");
+      var body = $("#panel-body");
+      var versos = body.querySelectorAll(".verso");
+      if(!versos.length) return;
+      var el = versos[Math.floor(Math.random() * versos.length)];
+      versos.forEach(function(v){ v.classList.remove("verso-destacado"); });
+      el.classList.add("verso-destacado");
+      el.scrollIntoView({ block: "center" });
+      typeWriter(el);
+    }
   };
 
   /* ---------- navegación Street-View (flechas mantenidas) ---------- */
@@ -230,6 +306,43 @@
         } else if(d > this.data.threshold + 1.4 && this.inside){
           this.inside = false; window.PoemaApp.proximityClose(this.data.poem);
         }
+      }
+    });
+
+    // ialink: ícono de IA que abre un verso aleatorio del poema III.
+    // Con evade>0, esquiva (se mueve) esa cantidad de veces antes de dejarse clickear.
+    AFRAME.registerComponent("ialink", {
+      schema:{ evade:{default:0} },
+      init:function(){
+        this.el.classList.add("clickable");
+        var p = this.el.getAttribute("position") || {x:0,y:0,z:0};
+        this.base = { x:p.x, y:p.y, z:p.z };
+        this.tries = 0;
+        var self = this;
+        this.el.addEventListener("click", function(){
+          // mientras le queden esquives, se mueve y no abre nada
+          if(self.data.evade > 0 && self.tries < self.data.evade){
+            self.tries++;
+            self.dodge();
+            window.PoemaApp.taunt();
+            return;
+          }
+          self.tries = 0;
+          if(self.data.evade > 0){
+            self.el.setAttribute("animation__dodge", {
+              property:"position", dur:200, easing:"easeOutQuad",
+              to: self.base.x+" "+self.base.y+" "+self.base.z });
+          }
+          window.PoemaApp.openIIIRandom();
+        });
+      },
+      dodge:function(){
+        var b = this.base;
+        var dx = (Math.random()*2 - 1) * 1.3;   // salto lateral
+        var dy = (Math.random()*2 - 1) * 0.55;  // salto vertical
+        this.el.setAttribute("animation__dodge", {
+          property:"position", dur:260, easing:"easeOutBack",
+          to: (b.x+dx).toFixed(2)+" "+(b.y+dy).toFixed(2)+" "+b.z });
       }
     });
   }

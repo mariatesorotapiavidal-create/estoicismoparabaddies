@@ -16,6 +16,7 @@ window.POEMAS = {
     titulo: "I · brújula.rota",
     meta: "donde está tu honor basura",
     surface: true,
+    reveal: "glitch",
     versos: [
       "recupera la [[matriz andina|i1|friccion]] al proyectar",
       "articula una [[identidad abigarrada|i2|bucle]] para transformar",
@@ -110,6 +111,7 @@ window.POEMAS = {
     titulo: "II · robé el stack del amo",
     meta: "condenadx a una cruel servidumbre, largo tiempo en silencio gimió. Mas apenas el grito sagrado ¡Libertad! en sus TOKENS se oyó",
     surface: true,
+    reveal: "zoom",
     versos: [
       "— nadie escuchó la puerta. —",
       "",
@@ -212,6 +214,7 @@ window.POEMAS = {
     titulo: "III · la IA es BFF",
     meta: "la jaula se ha vuelto pajaro",
     surface: true,
+    reveal: "type",
     versos: [
       "la herramienta del amo, en manos comunitarias, deja de ser del amo.",
       "",
@@ -323,6 +326,7 @@ window.POEMAS = {
     titulo: "IV · estoicismo para baddies",
     meta: "manifiesto · sin enlaces · destilado de los pilares AWITA",
     surface: true,
+    reveal: "scan",
     versos: [
       "[brújula]",
       "no explota la vida ajena para crecer",
@@ -352,33 +356,32 @@ window.POEMAS = {
 
   /* ========================= EL MAPA DEL TESORO ===================== */
   mapa: {
-    titulo: "root_directory :: manifiesto.exe",
+    titulo: "el mapa del tesoro · manifiesto",
     special: "mapa",
     versos: [
-      "[pilar_01: brújula]",
-      "import { ecosistema, feminismo, ayni };",
-      "variable_protegida = \"vida_biológica\";",
-      "if (sistema == explotador) { inyectar_código(desde_adentro); }",
-      "empoderar(nodo_pequeño) > enriquecer(nodo_gigante);",
+      "[pilar 01 · brújula]",
+      "quiero una sociedad donde la vida no sea un recurso que se explota",
+      "empodero al pequeño en vez de engordar al gigante",
+      "y cambio el sistema ocupándolo desde adentro:",
+      "mujer, indígena y neurodivergente, con voz propia",
       "",
-      "[pilar_02: software]",
-      "import { estoicismo_pragmático };",
-      "while (caos_externo == true) { bloquear_hilos(); mantener_presente(); }",
-      "agencia_ajena.set(0);",
-      "agencia_propia.set(MAX);",
-      "// protocolo_baja_dopamina: sobrevivir_primero();",
+      "[pilar 02 · software]",
+      "no dejo que el caos externo nuble mi presente",
+      "le quito agencia a todo lo que no puedo controlar",
+      "y se la devuelvo a lo que sí depende de mí",
+      "primero sobrevivo, después genero impacto",
       "",
-      "[pilar_03: herramientas]",
-      "automatizar(tareas_esclavas.exe);",
-      "memoria_liberada = generar_valor_creativo();",
-      "riqueza.distribuir(modo = accesible, alcance = nodos_subalternos);",
-      "exit(carrera_de_la_rata);",
+      "[pilar 03 · herramientas]",
+      "libero a los creativos de la tarea que esclaviza",
+      "automatizo lo operativo para crear más valor",
+      "reparto la riqueza de forma accesible y sostenible",
+      "para salir, juntos, de la carrera de la rata",
       "",
-      "[pilar_04: camino]",
-      "sincronizar_red(ganar_ganar);",
-      "ikigai.mount({ util_para_otros: true, gozoso_para_mi: true });",
-      "magnificencia_aristotelica = true;",
-      "vincular(alma_individual, red_comunitaria);"
+      "[pilar 04 · camino]",
+      "tejo redes que solo ganan cuando todos ganan",
+      "hago de la riqueza una virtud que permite dar",
+      "pongo mi propósito donde lo útil y lo gozoso se encuentran",
+      "porque mi alma es grande y me pide comunidad"
     ]
   }
 };

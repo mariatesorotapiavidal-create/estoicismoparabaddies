@@ -8,9 +8,11 @@
   /* Variables extraídas de tu identidad-visual.md */
   --background: oklch(0 0 0);
   --foreground: oklch(1.0000 0 0);
-  --primary: oklch(0.7428 0.1563 21.5624);
-  --secondary: oklch(0.9701 0.1909 109.4862);
-  --accent: oklch(0.7053 0.1595 250.9460);
+  --primary: oklch(0.7428 0.1563 21.5624);    /* coral / rojo */
+  --secondary: oklch(0.9701 0.1909 109.4862); /* amarillo */
+  --accent: oklch(0.7053 0.1595 250.9460);    /* azul */
+  --green: oklch(0.8253 0.2705 142.6285);     /* verde (chart-4) */
+  --magenta: oklch(0.6742 0.2949 328.2548);   /* magenta (chart-5) */
   --muted-foreground: oklch(0.8452 0 0);
   --border: oklch(1.0000 0 0);
   
@@ -100,8 +102,9 @@ body.mode-2d { background: var(--background); }
 #panel-head {
   display: flex; align-items: center; gap: 8px; padding: 11px 13px;
   background: var(--background); border-bottom: 2px solid var(--border);
+  border-top: 3px solid var(--primary);
 }
-#crumb { flex: 1; font-family: var(--font-mono); font-weight: 500; font-size: 14px; color: var(--foreground); text-transform: lowercase; }
+#crumb { flex: 1; font-family: var(--font-mono); font-weight: 500; font-size: 14px; color: var(--primary); text-transform: lowercase; }
 .hbtn {
   border: 2px solid var(--border); background: var(--background); width: 30px; height: 30px;
   cursor: pointer; font-size: 14px; color: var(--foreground); border-radius: var(--radius); display: grid; place-items: center;
@@ -112,9 +115,60 @@ body.mode-2d { background: var(--background); }
 #panel-body { padding: 14px 18px 20px; overflow-y: auto; line-height: 1.55; font-family: var(--font-mono); font-weight: 300; }
 
 /* ---------- Tipografía y Enlaces del Poema ---------- */
-.verso { margin: .14em 0; font-size: 16px; color: oklch(0.9 0 0); }
+.verso { margin: .14em 0; font-size: 16px; color: oklch(0.9 0 0); transition: background .25s, color .25s; }
+/* verso al que aterriza un ícono de IA */
+.verso-destacado { background: var(--secondary); color: #000; font-weight: 500; padding: 2px 6px; margin-left: -6px; box-shadow: 4px 4px 0 0 var(--accent); }
+/* cursor parpadeante mientras la IA "teclea" el verso */
+.verso.typing::after { content: "▋"; margin-left: 1px; color: #000; animation: caret .7s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+
+/* ===== Animaciones de apertura (una por poema) ===== */
+/* I · glitch */
+.rv-glitch { animation: glitchIn .45s steps(2, end) 1; }
+@keyframes glitchIn {
+  0%   { transform: translate(0); }
+  20%  { transform: translate(-3px, 2px); text-shadow: 2px 0 var(--primary), -2px 0 var(--accent); }
+  40%  { transform: translate(3px, -2px); text-shadow: -2px 0 var(--secondary), 2px 0 var(--accent); }
+  60%  { transform: translate(-2px, 1px); text-shadow: 2px 0 var(--primary), -2px 0 var(--green); }
+  80%  { transform: translate(2px, 0); text-shadow: none; }
+  100% { transform: translate(0); text-shadow: none; }
+}
+/* II · zoom + flash */
+.rv-zoom { animation: zoomIn .42s cubic-bezier(.2,.9,.2,1.25); transform-origin: center top; }
+@keyframes zoomIn { from { transform: scale(.82); opacity: .25; } to { transform: scale(1); opacity: 1; } }
+#panel.flash::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: var(--secondary); mix-blend-mode: screen; animation: flashOut .4s ease forwards;
+}
+@keyframes flashOut { from { opacity: .65; } to { opacity: 0; } }
+/* III · streaming (la IA escribe línea por línea) */
+@keyframes streamIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+/* IV · scanline */
+.rv-scan { animation: scanFade .55s ease; position: relative; }
+@keyframes scanFade { from { opacity: .2; } to { opacity: 1; } }
+.rv-scan::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 42%; pointer-events: none;
+  background: linear-gradient(var(--green), transparent); opacity: .55; animation: scanDown .8s ease forwards;
+}
+@keyframes scanDown { from { transform: translateY(-110%); } to { transform: translateY(280%); opacity: 0; } }
+
+/* ===== Texto burlón del ícono que esquiva ===== */
+#taunt {
+  position: fixed; top: 18%; left: 50%; z-index: 90;
+  font-family: var(--font-mono); font-weight: bold; font-size: 18px;
+  color: var(--primary); background: var(--background); border: 2px solid var(--primary);
+  padding: 8px 16px; box-shadow: var(--shadow-hard); opacity: 0; pointer-events: none;
+  transform: translate(-50%, -6px);
+}
+#taunt.show { animation: tauntPop .95s ease forwards; }
+@keyframes tauntPop {
+  0%   { opacity: 0; transform: translate(-50%, 4px) scale(.8) rotate(-3deg); }
+  15%  { opacity: 1; transform: translate(-50%, -6px) scale(1.05) rotate(2deg); }
+  70%  { opacity: 1; transform: translate(-50%, -6px) scale(1) rotate(0); }
+  100% { opacity: 0; transform: translate(-50%, -18px) scale(1) rotate(0); }
+}
 .estrofa-sep { height: .85em; }
-.escena { margin: 1em 0 .3em; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted-foreground); border-left: 2px solid var(--border); padding-left: 8px; }
+.escena { margin: 1em 0 .3em; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); border-left: 2px solid var(--accent); padding-left: 8px; }
 .susurro { margin: .5em 0; font-style: italic; color: var(--muted-foreground); font-size: 14px; }
 
 /* enlaces: colorizados según la identidad AWITA */
@@ -178,6 +232,14 @@ body.en-fuga #fuga-layer { display: flex; opacity: 1; pointer-events: auto; }
 }
 .idx-btn:active { transform: translate(3px, 3px); box-shadow: none; }
 .idx-n { display: grid; place-items: center; width: 34px; height: 34px; font-family: var(--font-mono); font-weight: 500; color: var(--background); background: var(--foreground); }
+.idx-btn:nth-child(1) .idx-n { background: var(--primary); }
+.idx-btn:nth-child(2) .idx-n { background: var(--secondary); }
+.idx-btn:nth-child(3) .idx-n { background: var(--accent); }
+.idx-btn:nth-child(4) .idx-n { background: var(--green); }
+.idx-btn:nth-child(1) { border-color: var(--primary); }
+.idx-btn:nth-child(2) { border-color: var(--secondary); }
+.idx-btn:nth-child(3) { border-color: var(--accent); }
+.idx-btn:nth-child(4) { border-color: var(--green); }
 #index2d-close { margin-top: 6px; background: none; border: none; color: var(--muted-foreground); cursor: pointer; font-size: 13px; text-decoration: underline; }
 
 /* ---------- El Mapa del Tesoro ---------- */
@@ -212,6 +274,10 @@ body.en-fuga #fuga-layer { display: flex; opacity: 1; pointer-events: auto; }
   padding: 30px; overflow-y: auto; color: var(--foreground); font-family: var(--font-mono);
   font-size: 15px; line-height: 1.6;
 }
-#mapa-body .escena { color: var(--primary); margin-top: 20px; font-weight: bold; border:none; padding:0; letter-spacing: 0; }
+#mapa-body .escena { margin-top: 20px; font-weight: bold; border:none; padding:0; letter-spacing: 0; }
+#mapa-body .escena.c1{ color: var(--primary); }
+#mapa-body .escena.c2{ color: var(--secondary); }
+#mapa-body .escena.c3{ color: var(--accent); }
+#mapa-body .escena.c4{ color: var(--green); }
 
 @media (max-width:380px) { .verso { font-size: 15px; } .nav { width: 46px; height: 46px; } }
