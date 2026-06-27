@@ -3,6 +3,7 @@
    - Sin giroscopio, sin audio.
    - Avance con flechas (mantener presionado) tipo Google Street View.
    - Hologramas flotantes abren cada poema (proximidad o clic).
+   - Efecto Matrix de fondo agregado.
    ============================================================ */
 (function () {
   "use strict";
@@ -30,14 +31,21 @@
   function render(id){
     var nodo = window.POEMAS[id];
     if(!nodo){ console.warn("Nodo inexistente:", id); return; }
+    
+    // Interceptores especiales
     if(nodo.special === "fuga"){ enterFuga(); return; }
+    if(nodo.special === "mapa"){ enterMapa(); return; }
+    
     leaveFuga();
     state.current = id;
     if(nodo.surface) state.lastSurface = id;
     $("#crumb").textContent = nodo.titulo || id;
+    
     var meta = $("#panel-meta");
+    // Volvemos a textContent para procesarlo como texto simple
     if(nodo.meta){ meta.textContent = nodo.meta; meta.style.display="block"; }
     else meta.style.display = "none";
+    
     var body = $("#panel-body");
     body.innerHTML = nodo.versos.map(lineToHTML).join("");
     body.scrollTop = 0;
@@ -54,6 +62,24 @@
     document.body.classList.add("en-fuga");
   }
   function leaveFuga(){ document.body.classList.remove("en-fuga"); }
+
+  function enterMapa() {
+    $("#panel").classList.add("hidden"); // Ocultar el cristal si estuviera abierto
+    $("#mapa-layer").classList.remove("hidden");
+    
+    $("#mapa-body").innerHTML = window.POEMAS.mapa.versos.map(function(l){
+      if(l === "") return "<br/>";
+      if(l.startsWith("[")) return "<div class='escena'>" + esc(l) + "</div>";
+      return "<div class='verso'>" + esc(l) + "</div>";
+    }).join("");
+    
+    state.current = "mapa";
+  }
+
+  function closeMapa() {
+    $("#mapa-layer").classList.add("hidden");
+    state.current = null; window.PoemaApp._active = null;
+  }
 
   function closePanel(){
     $("#panel").classList.add("hidden");
@@ -131,6 +157,7 @@
     $("#fuga-volver").addEventListener("click", function(){
       leaveFuga(); state.history = []; render(state.lastSurface || "i");
     });
+    $("#mapa-cerrar").addEventListener("click", closeMapa);
 
     var idx = $("#index2d-list");
     window.POEMAS_INDEX.forEach(function(p){
@@ -206,4 +233,50 @@
       }
     });
   }
+
+  /* ============================================================
+     EFECTO MATRIX (Background)
+     ============================================================ */
+  function initMatrix() {
+    var canvas = document.getElementById('matrix-bg');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Caracteres, incluyendo tus símbolos especiales
+    var letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ🜔🜂∞✺'.split('');
+    var fontSize = 14;
+    var columns = canvas.width / fontSize;
+    var drops = [];
+    for (var x = 0; x < columns; x++) drops[x] = 1;
+
+    // Ejecuta el algoritmo a ~22 FPS para cuidar el rendimiento móvil
+    setInterval(function() {
+      // Fondo negro translúcido para el efecto estela
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Color primario (rojo oscuro) extraído de tu paleta
+      ctx.fillStyle = 'oklch(0.7428 0.1563 21.5624)';
+      ctx.font = fontSize + 'px monospace';
+      
+      for (var i = 0; i < drops.length; i++) {
+        var text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }, 45);
+  }
+
+  // Arrancar el Matrix al cargar el DOM
+  document.addEventListener("DOMContentLoaded", initMatrix);
+  
+  // Ajustar el canvas si rotan la pantalla del celular
+  window.addEventListener('resize', function(){
+    var canvas = document.getElementById('matrix-bg');
+    if(canvas){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  });
+
 })();
