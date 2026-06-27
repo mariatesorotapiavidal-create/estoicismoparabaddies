@@ -5,12 +5,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Alata&family=Aref+Ruqaa:wght@400;700&family=Chivo+Mono:ital,wght@0,300;0,500;1,400&display=swap');
 
 :root {
-  /* Variables basadas en identidad-visual.md (monocromáticas) */
+  /* Variables extraídas de tu identidad-visual.md */
   --background: oklch(0 0 0);
-  --foreground: oklch(1 0 0);
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.7 0 0);
-  --border: oklch(1 0 0);
+  --foreground: oklch(1.0000 0 0);
+  --primary: oklch(0.7428 0.1563 21.5624);
+  --secondary: oklch(0.9701 0.1909 109.4862);
+  --accent: oklch(0.7053 0.1595 250.9460);
+  --muted-foreground: oklch(0.8452 0 0);
+  --border: oklch(1.0000 0 0);
   
   --font-sans: 'Alata', ui-sans-serif, sans-serif;
   --font-serif: 'Aref Ruqaa', ui-serif, serif;
@@ -115,14 +117,26 @@ body.mode-2d { background: var(--background); }
 .escena { margin: 1em 0 .3em; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted-foreground); border-left: 2px solid var(--border); padding-left: 8px; }
 .susurro { margin: .5em 0; font-style: italic; color: var(--muted-foreground); font-size: 14px; }
 
-.enlace { color: var(--foreground); text-decoration: none; cursor: pointer; font-weight: bold; padding-bottom: 1px; border-bottom: 2px solid var(--foreground); }
-.enlace:hover { background: var(--foreground); color: var(--background); }
-.glifo { font-size: .62em; margin-left: 3px; color: var(--muted-foreground); }
-.enlace:hover .glifo { color: var(--background); }
-.enlace-friccion { border-bottom-style: solid; }
-.enlace-eco { border-bottom-style: dashed; }
-.enlace-bucle { border-bottom-style: dotted; }
-.enlace-fuga { border-bottom-style: double; border-bottom-width: 3px; }
+/* enlaces: colorizados según la identidad AWITA */
+.enlace { text-decoration: none; cursor: pointer; font-weight: bold; padding-bottom: 1px; border-bottom: 2px solid var(--foreground); transition: opacity 0.2s; }
+.enlace:hover { opacity: 0.7; }
+.glifo { font-size: .62em; margin-left: 3px; }
+
+/* Aplicamos tus colores específicos a cada tipo de hipervínculo */
+.enlace-friccion { border-bottom-style: solid; border-bottom-color: var(--primary); color: var(--primary); }
+.enlace-eco { border-bottom-style: dashed; border-bottom-color: var(--secondary); color: var(--secondary); }
+.enlace-bucle { border-bottom-style: dotted; border-bottom-color: var(--accent); color: var(--accent); }
+.enlace-fuga { border-bottom-style: double; border-bottom-width: 3px; border-bottom-color: var(--foreground); color: var(--foreground); }
+
+/* Capa base para el efecto Matrix */
+#matrix-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Se queda al fondo de todo */
+}
 
 /* ---------- Navegación Street View ---------- */
 #navpad {
@@ -165,5 +179,39 @@ body.en-fuga #fuga-layer { display: flex; opacity: 1; pointer-events: auto; }
 .idx-btn:active { transform: translate(3px, 3px); box-shadow: none; }
 .idx-n { display: grid; place-items: center; width: 34px; height: 34px; font-family: var(--font-mono); font-weight: 500; color: var(--background); background: var(--foreground); }
 #index2d-close { margin-top: 6px; background: none; border: none; color: var(--muted-foreground); cursor: pointer; font-size: 13px; text-decoration: underline; }
+
+/* ---------- El Mapa del Tesoro ---------- */
+#mapa-layer {
+  position: fixed; inset: 0; z-index: 75; display: flex; align-items: center; justify-content: center;
+  background-color: var(--background);
+  /* Patrón de grilla cibernética (topografía digital) */
+  background-image: 
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 50px 50px; background-position: center center;
+  padding: 20px; overflow: hidden;
+}
+
+.mapa-container {
+  width: min(90vw, 720px); max-height: 85vh; display: flex; flex-direction: column;
+  background: oklch(0 0 0 / 0.95); border: 4px solid var(--foreground);
+  box-shadow: 16px 16px 0 0 var(--border);
+  animation: mapOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes mapOpen { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+#mapa-head {
+  display: flex; justify-content: space-between; align-items: center; padding: 12px 20px;
+  background: var(--foreground); color: var(--background);
+}
+.mapa-title { font-family: var(--font-mono); font-weight: bold; font-size: 14px; letter-spacing: 0.1em; }
+#mapa-cerrar { background: var(--background); color: var(--foreground); border: none; padding: 6px 12px; font-weight: bold; cursor: pointer; border-radius: var(--radius); }
+#mapa-cerrar:active { transform: translate(2px, 2px); }
+
+#mapa-body {
+  padding: 30px; overflow-y: auto; color: var(--foreground); font-family: var(--font-mono);
+  font-size: 15px; line-height: 1.6;
+}
+#mapa-body .escena { color: var(--primary); margin-top: 20px; font-weight: bold; border:none; padding:0; letter-spacing: 0; }
 
 @media (max-width:380px) { .verso { font-size: 15px; } .nav { width: 46px; height: 46px; } }
