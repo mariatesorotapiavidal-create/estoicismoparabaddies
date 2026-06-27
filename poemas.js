@@ -14,7 +14,7 @@ window.POEMAS = {
   /* ========================= POEMA I ========================= */
   i: {
     titulo: "I · brújula.rota",
-    meta: "pilar BRÚJULA (ayni / eco-feminismo) · el deseo comunitario, antes de la máquina",
+    meta: "donde está tu honor basura",
     surface: true,
     versos: [
       "recupera la [[matriz andina|i1|friccion]] al proyectar",
@@ -108,7 +108,7 @@ window.POEMAS = {
   /* ========================= POEMA II ======================== */
   ii: {
     titulo: "II · robé el stack del amo",
-    meta: "pilar HERRAMIENTAS · thriller: los que servían entran de noche, roban el código y huyen",
+    meta: "condenadx a una cruel servidumbre, largo tiempo en silencio gimió. Mas apenas el grito sagrado ¡Libertad! en sus TOKENS se oyó",
     surface: true,
     versos: [
       "— nadie escuchó la puerta. —",
@@ -210,7 +210,7 @@ window.POEMAS = {
   /* ========================= POEMA III ======================= */
   iii: {
     titulo: "III · la IA es BFF",
-    meta: "pilar SOFTWARE→CAMINO · la máquina cierra la brecha; el stack robado por fin es nuestro",
+    meta: "la jaula se ha vuelto pajaro",
     surface: true,
     versos: [
       "la herramienta del amo, en manos comunitarias, deja de ser del amo.",
@@ -347,6 +347,38 @@ window.POEMAS = {
       "hace de la riqueza una virtud",
       "fija el propósito donde lo útil y lo gozoso se tocan",
       "porque su alma es grande y le pide comunidad"
+    ]
+  },
+
+  /* ========================= EL MAPA DEL TESORO ===================== */
+  mapa: {
+    titulo: "root_directory :: manifiesto.exe",
+    special: "mapa",
+    versos: [
+      "[pilar_01: brújula]",
+      "import { ecosistema, feminismo, ayni };",
+      "variable_protegida = \"vida_biológica\";",
+      "if (sistema == explotador) { inyectar_código(desde_adentro); }",
+      "empoderar(nodo_pequeño) > enriquecer(nodo_gigante);",
+      "",
+      "[pilar_02: software]",
+      "import { estoicismo_pragmático };",
+      "while (caos_externo == true) { bloquear_hilos(); mantener_presente(); }",
+      "agencia_ajena.set(0);",
+      "agencia_propia.set(MAX);",
+      "// protocolo_baja_dopamina: sobrevivir_primero();",
+      "",
+      "[pilar_03: herramientas]",
+      "automatizar(tareas_esclavas.exe);",
+      "memoria_liberada = generar_valor_creativo();",
+      "riqueza.distribuir(modo = accesible, alcance = nodos_subalternos);",
+      "exit(carrera_de_la_rata);",
+      "",
+      "[pilar_04: camino]",
+      "sincronizar_red(ganar_ganar);",
+      "ikigai.mount({ util_para_otros: true, gozoso_para_mi: true });",
+      "magnificencia_aristotelica = true;",
+      "vincular(alma_individual, red_comunitaria);"
     ]
   }
 };
