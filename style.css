@@ -44,17 +44,17 @@ body.mode-2d { background: var(--background); }
 /* ---------- GATEWAY (Gato sin sonido + Instrucciones) ---------- */
 #gateway {
   position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 26px;
+  align-items: center; justify-content: safe center; gap: 12px; text-align: center; padding: 26px;
   background: var(--background); transition: opacity .6s ease; overflow-y: auto;
 }
 #gateway.fade { opacity: 0; pointer-events: none; }
 #cat-img {
-  width: min(46vw, 210px); height: auto; border: 2px solid var(--border);
-  filter: grayscale(1) contrast(1.1); box-shadow: var(--shadow-hard); border-radius: var(--radius);
+  width: min(42vw, 190px); height: auto; border: 2px solid var(--border);
+  box-shadow: var(--shadow-hard); border-radius: var(--radius);
 }
 #cat-fallback { display: none; font-size: 120px; line-height: 1; filter: grayscale(1); }
 #gateway h1 {
-  margin: .3em 0 0; font-size: clamp(26px, 7vw, 46px); font-weight: 400;
+  margin: 0; font-size: clamp(26px, 7vw, 46px); font-weight: 400;
   text-transform: lowercase; letter-spacing: .04em;
 }
 #instrucciones {
