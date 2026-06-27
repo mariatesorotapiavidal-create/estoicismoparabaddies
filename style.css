@@ -1,0 +1,169 @@
+/* ============================================================
+   style.css — Identidad AWITA (Escala de Grises / Brutalista)
+   Tokens: Alata + Chivo Mono · radius 0 · sombras duras
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Alata&family=Aref+Ruqaa:wght@400;700&family=Chivo+Mono:ital,wght@0,300;0,500;1,400&display=swap');
+
+:root {
+  /* Variables basadas en identidad-visual.md (monocromáticas) */
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --border: oklch(1 0 0);
+  
+  --font-sans: 'Alata', ui-sans-serif, sans-serif;
+  --font-serif: 'Aref Ruqaa', ui-serif, serif;
+  --font-mono: 'Chivo Mono', ui-monospace, monospace;
+  
+  --radius: 0px;
+  --shadow-hard: 4px 4px 0px 0px oklch(0.2 0 0);
+  --tracking-normal: 0.05em;
+}
+
+* { box-sizing: border-box; outline: none; }
+
+html, body {
+  margin: 0; height: 100%; overflow: hidden;
+  background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); letter-spacing: var(--tracking-normal);
+}
+
+.hidden { display: none !important; }
+button { font-family: var(--font-sans); letter-spacing: var(--tracking-normal); }
+
+/* ---------- Escena 3D ---------- */
+a-scene { position: fixed; inset: 0; }
+body.mode-2d a-scene { display: none; }
+body.mode-2d { background: var(--background); }
+
+/* ---------- GATEWAY (Gato sin sonido + Instrucciones) ---------- */
+#gateway {
+  position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px; text-align: center; padding: 26px;
+  background: var(--background); transition: opacity .6s ease;
+}
+#gateway.fade { opacity: 0; pointer-events: none; }
+#cat-img {
+  width: min(46vw, 210px); height: auto; border: 2px solid var(--border);
+  filter: grayscale(1) contrast(1.1); box-shadow: var(--shadow-hard); border-radius: var(--radius);
+}
+#cat-fallback { display: none; font-size: 120px; line-height: 1; filter: grayscale(1); }
+#gateway h1 {
+  margin: .3em 0 0; font-size: clamp(26px, 7vw, 46px); font-weight: 400;
+  text-transform: lowercase; letter-spacing: .04em;
+}
+#instrucciones {
+  list-style: none; margin: 6px 0 4px; padding: 0; display: grid; gap: 8px;
+  max-width: 36ch; color: var(--muted-foreground); font-family: var(--font-mono); font-size: 13.5px;
+}
+#instrucciones li { display: flex; gap: 10px; align-items: baseline; justify-content: flex-start; text-align: left; }
+#instrucciones .k {
+  color: var(--background); background: var(--foreground); border: 1px solid var(--border); 
+  padding: 2px 7px; font-size: 12px; white-space: nowrap; border-radius: var(--radius); font-weight: bold;
+}
+#btn-enter {
+  margin-top: 8px; font-size: 16px; color: var(--background); background: var(--foreground);
+  border: 2px solid var(--border); cursor: pointer; padding: 13px 30px;
+  text-transform: lowercase; letter-spacing: .06em;
+  box-shadow: var(--shadow-hard); transition: transform .12s; border-radius: var(--radius);
+}
+#btn-enter:active { transform: translate(3px, 3px); box-shadow: none; }
+
+.firma {
+  margin-top: 32px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+
+/* ---------- Interfaz (Toolbar y Panel) ---------- */
+#toolbar { position: fixed; top: 12px; right: 12px; z-index: 50; display: flex; gap: 8px; }
+.tool {
+  background: var(--background); border: 2px solid var(--border); color: var(--foreground);
+  font-size: 13px; cursor: pointer; padding: 9px 12px; box-shadow: var(--shadow-hard); border-radius: var(--radius);
+}
+.tool:active { transform: translate(3px, 3px); box-shadow: none; }
+
+#panel {
+  position: fixed; z-index: 60; left: 50%; bottom: 96px; transform: translateX(-50%);
+  width: min(93vw, 560px); max-height: 64vh; display: flex; flex-direction: column;
+  background: oklch(0.05 0 0); border: 2px solid var(--border); box-shadow: var(--shadow-hard);
+  animation: rise .28s ease; border-radius: var(--radius);
+}
+@keyframes rise { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+#panel-head {
+  display: flex; align-items: center; gap: 8px; padding: 11px 13px;
+  background: var(--background); border-bottom: 2px solid var(--border);
+}
+#crumb { flex: 1; font-family: var(--font-mono); font-weight: 500; font-size: 14px; color: var(--foreground); text-transform: lowercase; }
+.hbtn {
+  border: 2px solid var(--border); background: var(--background); width: 30px; height: 30px;
+  cursor: pointer; font-size: 14px; color: var(--foreground); border-radius: var(--radius); display: grid; place-items: center;
+}
+.hbtn:active { transform: translate(2px, 2px); }
+
+#panel-meta { padding: 9px 16px 0; font-size: 11.5px; font-style: italic; color: var(--muted-foreground); font-family: var(--font-mono); }
+#panel-body { padding: 14px 18px 20px; overflow-y: auto; line-height: 1.55; font-family: var(--font-mono); font-weight: 300; }
+
+/* ---------- Tipografía y Enlaces del Poema ---------- */
+.verso { margin: .14em 0; font-size: 16px; color: oklch(0.9 0 0); }
+.estrofa-sep { height: .85em; }
+.escena { margin: 1em 0 .3em; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted-foreground); border-left: 2px solid var(--border); padding-left: 8px; }
+.susurro { margin: .5em 0; font-style: italic; color: var(--muted-foreground); font-size: 14px; }
+
+.enlace { color: var(--foreground); text-decoration: none; cursor: pointer; font-weight: bold; padding-bottom: 1px; border-bottom: 2px solid var(--foreground); }
+.enlace:hover { background: var(--foreground); color: var(--background); }
+.glifo { font-size: .62em; margin-left: 3px; color: var(--muted-foreground); }
+.enlace:hover .glifo { color: var(--background); }
+.enlace-friccion { border-bottom-style: solid; }
+.enlace-eco { border-bottom-style: dashed; }
+.enlace-bucle { border-bottom-style: dotted; }
+.enlace-fuga { border-bottom-style: double; border-bottom-width: 3px; }
+
+/* ---------- Navegación Street View ---------- */
+#navpad {
+  position: fixed; z-index: 55; left: 50%; bottom: 16px; transform: translateX(-50%);
+  display: grid; grid-template-columns: repeat(3, auto); gap: 8px; align-items: center;
+}
+body.mode-2d #navpad { display: none; }
+.nav {
+  width: 52px; height: 52px; display: grid; place-items: center; cursor: pointer;
+  background: oklch(0 0 0 / 0.8); border: 2px solid var(--border); color: var(--foreground);
+  font-size: 22px; user-select: none; touch-action: none; border-radius: var(--radius);
+  box-shadow: 2px 2px 0 0 oklch(0.2 0 0);
+}
+.nav:active { background: var(--foreground); color: var(--background); box-shadow: none; transform: translate(2px, 2px); }
+#nav-fwd { font-size: 28px; }
+.nav-row { display: flex; gap: 8px; justify-content: center; }
+#nav-back { font-size: 18px; opacity: .8; }
+
+/* ---------- La Fuga y Fallback ---------- */
+#fuga-layer {
+  position: fixed; inset: 0; z-index: 70; display: none; flex-direction: column;
+  align-items: center; justify-content: center; gap: 30px; text-align: center;
+  background: var(--background); pointer-events: none; opacity: 0; transition: opacity 1.2s ease;
+}
+body.en-fuga #fuga-layer { display: flex; opacity: 1; pointer-events: auto; }
+#fuga-text p { margin: .4em 0; font-family: var(--font-serif); font-size: clamp(19px, 5vw, 28px); color: var(--foreground); font-style: italic; }
+#fuga-volver {
+  margin-top: 8px; border: 2px solid var(--border); cursor: pointer; background: var(--background);
+  color: var(--foreground); padding: 11px 24px; font-size: 14px; box-shadow: var(--shadow-hard); border-radius: var(--radius);
+}
+
+#index2d { position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: var(--background); }
+#index2d h2 { margin: 0; font-weight: 400; text-transform: lowercase; letter-spacing: .04em; }
+#index2d .sub { margin: 0 0 10px; font-size: 12px; color: var(--muted-foreground); font-family: var(--font-mono); }
+.idx-btn {
+  width: min(88vw, 440px); text-align: left; display: flex; align-items: center; gap: 14px;
+  border: 2px solid var(--border); cursor: pointer; font-size: 16px; color: var(--foreground); background: oklch(0.05 0 0);
+  padding: 15px 18px; box-shadow: var(--shadow-hard); transition: transform .12s; text-transform: lowercase; border-radius: var(--radius);
+}
+.idx-btn:active { transform: translate(3px, 3px); box-shadow: none; }
+.idx-n { display: grid; place-items: center; width: 34px; height: 34px; font-family: var(--font-mono); font-weight: 500; color: var(--background); background: var(--foreground); }
+#index2d-close { margin-top: 6px; background: none; border: none; color: var(--muted-foreground); cursor: pointer; font-size: 13px; text-decoration: underline; }
+
+@media (max-width:380px) { .verso { font-size: 15px; } .nav { width: 46px; height: 46px; } }

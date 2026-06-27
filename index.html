@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>estoicismo para baddies</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="poemas.js"></script>
+  <script src="app.js"></script>
+</head>
+<body>
+
+  <!-- ===================== MUNDO 3D (void negro) ===================== -->
+  <a-scene renderer="antialias:true;colorManagement:true" vr-mode-ui="enabled:false"
+           background="color:#000000" fog="type:linear;color:#000000;near:3;far:26"
+           loading-screen="enabled:false">
+
+    <a-sky color="#000000"></a-sky>
+    <a-entity light="type:ambient;intensity:0.85;color:#ffffff"></a-entity>
+    <a-entity light="type:directional;intensity:0.4;color:#ffffff" position="0 4 2"></a-entity>
+
+    <!-- Suelo: relleno negro + grid gris (holográfico) -->
+    <a-plane rotation="-90 0 0" width="220" height="220" position="0 -0.02 0"
+             material="shader:flat;color:#050505"></a-plane>
+    <a-entity geometry="primitive:plane;width:90;height:90;segmentsWidth:45;segmentsHeight:45"
+              rotation="-90 0 0"
+              material="shader:flat;wireframe:true;color:#262626;transparent:true;opacity:0.6"></a-entity>
+
+    <!-- ===== Hologramas flotantes: 1 por poema ===== -->
+    <!-- I -->
+    <a-plane class="clickable" hologram="poem:i" width="2.7" height="1.35" position="0 1.6 -6"
+      material="shader:flat;color:#d8d8d8;transparent:true;opacity:0.10;side:double"
+      animation__bob="property:position;dir:alternate;loop:true;dur:4200;to:0 1.78 -6"
+      animation__pulse="property:material.opacity;dir:alternate;loop:true;dur:2600;to:0.22">
+      <a-plane width="2.74" height="1.39"
+        material="shader:flat;wireframe:true;color:#ffffff;transparent:true;opacity:0.55"></a-plane>
+      <a-text value="brujula.rota" align="center" color="#ffffff" width="3.6" position="0 0.12 0.05"></a-text>
+      <a-text value="01" align="center" color="#8a8a8a" width="2.2" position="0 -0.42 0.05"></a-text>
+    </a-plane>
+    <!-- II -->
+    <a-plane class="clickable" hologram="poem:ii" width="2.7" height="1.35" position="-5 1.6 -10"
+      material="shader:flat;color:#d8d8d8;transparent:true;opacity:0.10;side:double"
+      animation__bob="property:position;dir:alternate;loop:true;dur:4800;to:-5 1.78 -10"
+      animation__pulse="property:material.opacity;dir:alternate;loop:true;dur:3000;to:0.22">
+      <a-plane width="2.74" height="1.39"
+        material="shader:flat;wireframe:true;color:#ffffff;transparent:true;opacity:0.55"></a-plane>
+      <a-text value="robe el stack del amo" align="center" color="#ffffff" width="3.6" position="0 0.12 0.05"></a-text>
+      <a-text value="02" align="center" color="#8a8a8a" width="2.2" position="0 -0.42 0.05"></a-text>
+    </a-plane>
+    <!-- III -->
+    <a-plane class="clickable" hologram="poem:iii" width="2.7" height="1.35" position="5 1.6 -10"
+      material="shader:flat;color:#d8d8d8;transparent:true;opacity:0.10;side:double"
+      animation__bob="property:position;dir:alternate;loop:true;dur:4500;to:5 1.78 -10"
+      animation__pulse="property:material.opacity;dir:alternate;loop:true;dur:2800;to:0.22">
+      <a-plane width="2.74" height="1.39"
+        material="shader:flat;wireframe:true;color:#ffffff;transparent:true;opacity:0.55"></a-plane>
+      <a-text value="la IA es BFF" align="center" color="#ffffff" width="3.6" position="0 0.12 0.05"></a-text>
+      <a-text value="03" align="center" color="#8a8a8a" width="2.2" position="0 -0.42 0.05"></a-text>
+    </a-plane>
+    <!-- IV -->
+    <a-plane class="clickable" hologram="poem:iv" width="2.7" height="1.35" position="0 1.6 -15"
+      material="shader:flat;color:#d8d8d8;transparent:true;opacity:0.10;side:double"
+      animation__bob="property:position;dir:alternate;loop:true;dur:5200;to:0 1.78 -15"
+      animation__pulse="property:material.opacity;dir:alternate;loop:true;dur:3200;to:0.22">
+      <a-plane width="2.74" height="1.39"
+        material="shader:flat;wireframe:true;color:#ffffff;transparent:true;opacity:0.55"></a-plane>
+      <a-text value="estoicismo para baddies" align="center" color="#ffffff" width="3.6" position="0 0.12 0.05"></a-text>
+      <a-text value="04" align="center" color="#8a8a8a" width="2.2" position="0 -0.42 0.05"></a-text>
+    </a-plane>
+
+    <!-- Rig + cámara POV (ESTRICTAMENTE con flechas. Giroscopio y arrastre táctil apagados) -->
+    <a-entity id="rig" position="0 0 0">
+      <a-camera id="cam" wasd-controls-enabled="false" look-controls="enabled: false">
+        <a-cursor raycaster="objects:.clickable;far:30" fuse="false"
+                  material="color:#ffffff;shader:flat"
+                  geometry="primitive:ring;radiusInner:0.012;radiusOuter:0.02"></a-cursor>
+      </a-camera>
+    </a-entity>
+  </a-scene>
+
+  <!-- ===================== UI 2D ===================== -->
+  <div id="toolbar">
+    <button id="btn-index" class="tool" title="Índice">índice</button>
+  </div>
+
+  <!-- Panel de hipertexto -->
+  <div id="panel" class="hidden" aria-live="polite">
+    <div id="panel-head">
+      <span id="crumb"></span>
+      <button id="btn-back" class="hbtn" title="Atrás">↩</button>
+      <button id="btn-close" class="hbtn" title="Cerrar">✕</button>
+    </div>
+    <div id="panel-meta"></div>
+    <div id="panel-body"></div>
+  </div>
+
+  <!-- La fuga -->
+  <div id="fuga-layer">
+    <div id="fuga-text"></div>
+    <button id="fuga-volver">← volver a la red</button>
+  </div>
+
+  <!-- Navegación tipo Street View -->
+  <div id="navpad">
+    <div class="nav" id="nav-left" title="Girar izquierda">‹</div>
+    <div>
+      <div class="nav" id="nav-fwd" title="Avanzar">▲</div>
+      <div class="nav-row"><div class="nav" id="nav-back" title="Retroceder">▼</div></div>
+    </div>
+    <div class="nav" id="nav-right" title="Girar derecha">›</div>
+  </div>
+
+  <!-- Índice 2D / fallback -->
+  <div id="index2d" class="hidden">
+    <h2>las herramientas del amo</h2>
+    <p class="sub">serie hipervincular algorítmica · elige un nodo raíz</p>
+    <div id="index2d-list"></div>
+    <button id="index2d-close">cerrar índice</button>
+  </div>
+
+  <!-- ===================== GATEWAY (solo el gato) ===================== -->
+  <div id="gateway">
+    <img id="cat-img" src="assets/gato.webp" alt="gato" />
+    <div id="cat-fallback">🐱</div>
+    <h1>estoicismo para baddies</h1>
+    <ul id="instrucciones">
+      <li><span class="k">▲ ▼ ‹ ›</span> toca las flechas en pantalla para avanzar y girar</li>
+      <li><span class="k">acércate</span> a un holograma flotante para abrirlo</li>
+      <li><span class="k">toca</span> las palabras subrayadas para revelar el poema</li>
+    </ul>
+    <button id="btn-enter">ingresar</button>
+    <span class="firma">por @awitadeluz</span>
+  </div>
+
+  <!-- Vercel Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
